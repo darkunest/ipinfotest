@@ -59,9 +59,10 @@ class GeoIpForm extends \CBitrixComponent implements Controllerable
             "filter" => ["UF_IP" => $ip]
         ]);
 
+        // Если находим нужный элемент, то в переменную для возврата закидываем информацию об этом ip
         if ($arData = $rsData->Fetch()) {
             $result = unserialize($arData['UF_DATA']);
-        } else {
+        } else { // иначе используем api sypexgeo для получения информации
             $is_bot = empty($_SERVER['HTTP_USER_AGENT']) || preg_match(
                     "~(Google|Yahoo|Rambler|Bot|Yandex|Spider|Snoopy|Crawler|Finder|Mail|curl|request|Guzzle|Java)~i",
                     $_SERVER['HTTP_USER_AGENT']
@@ -72,12 +73,14 @@ class GeoIpForm extends \CBitrixComponent implements Controllerable
             $result = $geo;
 
             if (!empty($result) && $result['city'] !== null) {
+                // если удалось найти, то добавляем информацию в HL-блок для последующего использования
                 $fields = [
                     'UF_IP' => $result['ip'],
                     'UF_DATA' => serialize($result)
                 ];
                 $entityDataClass::add($fields);
             } else {
+                // если в конечном массиве ничего нет или значение города = null, то это значит, что ничего не удалось по нему найти
                 throw new ArgumentException(Loc::getMessage('IP_INFO_NOT_FOUND'));
             }
         }
