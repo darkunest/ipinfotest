@@ -1,16 +1,11 @@
 <?php
 
-use Bitrix\Main\Engine\Contract\Controllerable,
-    Bitrix\Main\Engine\CurrentUser,
-    Bitrix\Main\Localization\Loc;
-
-use \Bitrix\Main\Text\Encoding;
-
-use Bitrix\Main\Type\DateTime;
-
+use Bitrix\Main\Engine\Contract\Controllerable;
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Loader;
 use Bitrix\Highloadblock as HL;
 use Bitrix\Main\Entity;
+use Bitrix\Main\ArgumentException;
 
 class GeoIpForm extends \CBitrixComponent implements Controllerable
 {
@@ -44,17 +39,17 @@ class GeoIpForm extends \CBitrixComponent implements Controllerable
         $result = [];
         $ip = $params['geoip'];
         if (!$ip) {
-            throw new \Bitrix\Main\ArgumentException(Loc::getMessage('IP_IS_EMPTY'));
+            throw new ArgumentException(Loc::getMessage('IP_IS_EMPTY'));
         }
         if (!Loader::includeModule("highloadblock")) {
-            throw new \Bitrix\Main\ArgumentException(Loc::getMessage('HL_NOT_INSTALLED'));
+            throw new ArgumentException(Loc::getMessage('HL_NOT_INSTALLED'));
         }
         $hlId = 0;
         $hlRes = HL\HighloadBlockTable::getList(['filter' => ['NAME' => 'GeoIpItems']]);
         if ($hl = $hlRes->fetch()) {
             $hlId = $hl['ID'];
         } else {
-            throw new \Bitrix\Main\ArgumentException(Loc::getMessage('HL_NOT_FOUND'));
+            throw new ArgumentException(Loc::getMessage('HL_NOT_FOUND'));
         }
 
         $entity = HL\HighloadBlockTable::compileEntity($hlId);
@@ -83,7 +78,7 @@ class GeoIpForm extends \CBitrixComponent implements Controllerable
                 ];
                 $entityDataClass::add($fields);
             } else {
-                throw new \Bitrix\Main\ArgumentException(Loc::getMessage('IP_INFO_NOT_FOUND'));
+                throw new ArgumentException(Loc::getMessage('IP_INFO_NOT_FOUND'));
             }
         }
 
