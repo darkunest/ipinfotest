@@ -1,5 +1,9 @@
 ﻿# ipinfotest
 
+Для поиска информации об ip используется https://api.sypexgeo.net/.
+
+Для проверки работы нужно зайти на страницу /form_geoip 
+
 ![image](https://github.com/user-attachments/assets/30adbb9b-9612-44d2-b3e2-0760922e4e04)
 
 
